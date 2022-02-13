@@ -1,6 +1,16 @@
-import React, {useState} from 'react';
-import { Dimensions, FlatList, Modal, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { Button, List, ListItem } from 'react-native-elements';
+import React, {useEffect, useState} from 'react';
+import { 
+  Button,
+  Dimensions, 
+  FlatList, 
+  Modal, 
+  Image,
+  Linking, 
+  SafeAreaView, 
+  ScrollView, 
+  StyleSheet, 
+  Text, 
+  View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../Style';
 
@@ -32,7 +42,22 @@ const dummyData = [
 ];
 
 export default function ListHome() {
+  const [wikiData, setWikiData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const fetchWiki = ({item}) => {
+    fetch(`http://192.168.1.185:8080/info/${item.name}`)
+    //fetch(`http://10.0.2.2:8080/info/apple`)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //console.log(responseJson)
+        setWikiData(responseJson);
+      })
+      .catch((error) => console.log(error))
+      .finally(() => setModalVisible(true))
+  };
+
+  //console.log(wikiData);
 
   const Header = () => {
     return (
@@ -64,7 +89,7 @@ export default function ListHome() {
         <Icon
           name="info-circle"
           size={30}
-          onPress={() => setModalVisible(true)}
+          onPress={() => fetchWiki({item})}
         />
         {/* <Image source={{uri: {item.imgurl}}} /> */}
       </View>
@@ -77,6 +102,20 @@ export default function ListHome() {
   const keyExtractor = (item) => {
     return item.id;
   }
+
+//  const fetchData = async() => {
+//     const response = await fetch(`http://localhost:8080/info/${item.name}`);
+//     const data = await response.json();
+//     setData(data);
+
+//   } 
+
+  // const getWikiInfo = ({item}) => {
+  //   axios.get(`http://localhost:8080/info/${item.name}`)
+  //     .then((response) => setWikiData(response.data))
+  //     .catch((error) => console.log(error));
+  // }
+  
 
   return (
       <SafeAreaView style={styles.container}>
@@ -103,13 +142,25 @@ export default function ListHome() {
           transparent={true}
           visible={modalVisible}
         >
+          
           <View style={listStyle.modal}>
-            <Text>Hello</Text>
+            
+            <ScrollView>
+              <View style={listStyle.modalContent}> 
+                <Text style={listStyle.itemName}>Details</Text>
+                <Text style={listStyle.modalBody}>{wikiData.summary}</Text>
+                <Button
+                  title="Read More on Wiki"
+                  onPress={() => Linking.openURL(wikiData.link)}
+                />
+                <Text style={{alignSelf: "center"}}>(Clicking this will open a new window!)</Text>
+              </View>
+            </ScrollView>
             <Icon style={listStyle.closeIcon}
               name="close"
               size={30}
               onPress={() => setModalVisible(false)}
-            />
+          />
           </View>
         </Modal>
       </SafeAreaView>
@@ -160,5 +211,11 @@ const listStyle = StyleSheet.create({
   itemImg: {
     width: 100,
     height: 100,
+  },
+  modalContent: {
+    margin: 15,
+  },
+  modalBody: {
+    fontSize: 16,
   }
 })

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Image, SafeAreaView, Text } from 'react-native';
+import { Button, Image, SafeAreaView, Text, View } from 'react-native';
 import styles from '../Style';
 
 export default function HomePage({navigation}) {
@@ -10,9 +10,14 @@ export default function HomePage({navigation}) {
           style={styles.headerImage} 
           source={require('../assets/fresh-food-image.jpg')}
         />
-      <Button
+      <View style={{padding: 10}}><Button
         title="Ingredients List"
         onPress={() => navigation.navigate('List')}
+      />
+      </View>
+      <Button
+        title="Unit Converter"
+        onPress={() => navigation.navigate('Converter')}
       />
     </SafeAreaView>
   );
