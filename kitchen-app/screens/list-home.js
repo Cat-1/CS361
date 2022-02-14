@@ -7,43 +7,99 @@ import {
   Image,
   Linking, 
   SafeAreaView, 
+  SectionList,
   ScrollView, 
   StyleSheet, 
   Text, 
   View } from 'react-native';
+// import {SearchBar} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../Style';
+import filter from 'lodash.filter';
+import SearchBar from '../SearchBar';
 
-const dummyData = [
+// const dummyData = [
+//   {
+//     id: 1, 
+//     name: "Apple",
+//     imgurl: require("../assets/apple.jpg"), 
+//     expDate: "2/15/2023",
+//   }, 
+//   {
+//     id: 2, 
+//     name: "Banana", 
+//     imgurl: require("../assets/Banana-Single.jpg"), 
+//     expDate: "2/20/2022",
+//   }, 
+//   {
+//     id: 3, 
+//     name: "Lucky Charms", 
+//     imgurl: require("../assets/luckycharms.jpg"), 
+//     expDate: "10/25/2024",
+//   }, 
+//   {
+//     id: 4, 
+//     name: "Soy Sauce", 
+//     imgurl: require("../assets/soysauce.png"), 
+//     expDate: "8/5/2022",
+//   },
+// ];
+
+const dummyData2 = [
   {
-    id: 1, 
-    name: "Apple",
-    imgurl: require("../assets/apple.jpg"), 
-    expDate: "2/15/2023",
-  }, 
-  {
-    id: 2, 
-    name: "Banana", 
-    imgurl: require("../assets/Banana-Single.jpg"), 
-    expDate: "2/20/2022",
-  }, 
-  {
-    id: 3, 
-    name: "Lucky Charms", 
-    imgurl: require("../assets/luckycharms.jpg"), 
-    expDate: "10/25/2024",
-  }, 
-  {
-    id: 4, 
-    name: "Soy Sauce", 
-    imgurl: require("../assets/soysauce.png"), 
-    expDate: "8/5/2022",
+    title: "Favorites",
+    data: 
+      [
+        {
+        id: 1, 
+        name: "Apple",
+        imgurl: require("../assets/apple.jpg"), 
+        expDate: "2/15/2023",
+      }, 
+      {
+        id: 4, 
+        name: "Soy Sauce", 
+        imgurl: require("../assets/soysauce.png"), 
+        expDate: "8/5/2022",
+      },
+    ]
   },
+  {
+    title: "All",
+    data:
+      [
+        {
+          id: 1, 
+          name: "Apple",
+          imgurl: require("../assets/apple.jpg"), 
+          expDate: "2/15/2023",
+        }, 
+        {
+        id: 2, 
+        name: "Banana", 
+        imgurl: require("../assets/Banana-Single.jpg"), 
+        expDate: "2/20/2022",
+      }, 
+      {
+        id: 3, 
+        name: "Lucky Charms", 
+        imgurl: require("../assets/luckycharms.jpg"), 
+        expDate: "10/25/2024",
+      }, 
+      {
+        id: 4, 
+        name: "Soy Sauce", 
+        imgurl: require("../assets/soysauce.png"), 
+        expDate: "8/5/2022",
+      },
+    ]
+  }
 ];
 
 export default function ListHome() {
   const [wikiData, setWikiData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [search, setSearch] = useState("");
 
   const fetchWiki = ({item}) => {
     fetch(`http://192.168.1.185:8080/info/${item.name}`)
@@ -71,11 +127,6 @@ export default function ListHome() {
 
   const renderItem = ({item}) => {
     return (
-      // <ListItem
-      //   title={item.name}
-      //   subtitle={item.expDate}
-      //   leftAvatar={ {source: {uri: item.imgurl}} }
-      // />
 
       <View style={listStyle.listItem}>
         <Image
@@ -91,7 +142,6 @@ export default function ListHome() {
           size={30}
           onPress={() => fetchWiki({item})}
         />
-        {/* <Image source={{uri: {item.imgurl}}} /> */}
       </View>
 
     )
@@ -102,40 +152,37 @@ export default function ListHome() {
   const keyExtractor = (item) => {
     return item.id;
   }
-
-//  const fetchData = async() => {
-//     const response = await fetch(`http://localhost:8080/info/${item.name}`);
-//     const data = await response.json();
-//     setData(data);
-
-//   } 
-
-  // const getWikiInfo = ({item}) => {
-  //   axios.get(`http://localhost:8080/info/${item.name}`)
-  //     .then((response) => setWikiData(response.data))
-  //     .catch((error) => console.log(error));
-  // }
   
+  const updateSearch = (search) => {
+    setSearch(search);
+  }
 
   return (
       <SafeAreaView style={styles.container}>
+        
         <Header />
-        {/* <View style={{width: "100%"}}>
-          {
-            dummyData.map((l,i) => (
-              <ListItem key={i}>
-                <ListItem.Content style={listStyle.listItem}>
-                  <ListItem.Title>{l.name}</ListItem.Title>
-                </ListItem.Content>
-              </ListItem>
-            ))
-          }
-        </View> */}
+        <SearchBar />
+        {/* <Text>Favorites</Text>
         <FlatList 
           data={dummyData}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
-          />
+        />
+
+        <FlatList 
+          data={dummyData}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+        /> */}
+
+        <SectionList
+          sections={dummyData2}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          renderSectionHeader={({ section: { title } }) => (
+            <Text style={styles.header}>{title}</Text>
+          )}
+        />
         
         <Modal
           animationType="slide"
@@ -144,7 +191,6 @@ export default function ListHome() {
         >
           
           <View style={listStyle.modal}>
-            
             <ScrollView>
               <View style={listStyle.modalContent}> 
                 <Text style={listStyle.itemName}>Details</Text>
