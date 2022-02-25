@@ -18,33 +18,6 @@ import styles from '../Style';
 import filter from 'lodash.filter';
 import SearchBar from '../SearchBar';
 
-// const dummyData = [
-//   {
-//     id: 1, 
-//     name: "Apple",
-//     imgurl: require("../assets/apple.jpg"), 
-//     expDate: "2/15/2023",
-//   }, 
-//   {
-//     id: 2, 
-//     name: "Banana", 
-//     imgurl: require("../assets/Banana-Single.jpg"), 
-//     expDate: "2/20/2022",
-//   }, 
-//   {
-//     id: 3, 
-//     name: "Lucky Charms", 
-//     imgurl: require("../assets/luckycharms.jpg"), 
-//     expDate: "10/25/2024",
-//   }, 
-//   {
-//     id: 4, 
-//     name: "Soy Sauce", 
-//     imgurl: require("../assets/soysauce.png"), 
-//     expDate: "8/5/2022",
-//   },
-// ];
-
 const dummyData2 = [
   {
     title: "Favorites",
@@ -128,13 +101,13 @@ export default function ListHome() {
   const renderItem = ({item}) => {
     return (
 
-      <View style={listStyle.listItem}>
+      <View style={styles.listItem}>
         <Image
           source={item.imgurl}
-          style={listStyle.itemImg}
+          style={styles.itemImg}
         />
-        <View style={listStyle.itemDetailsColumn}>
-          <Text style={listStyle.itemName}>{item.name}</Text>
+        <View style={styles.itemDetailsColumn}>
+          <Text style={styles.itemName}>{item.name}</Text>
           <Text>{`Exp: ${item.expDate}`}</Text>
         </View>
         <Icon
@@ -143,10 +116,7 @@ export default function ListHome() {
           onPress={() => fetchWiki({item})}
         />
       </View>
-
     )
-    
-
   }
 
   const keyExtractor = (item) => {
@@ -162,19 +132,6 @@ export default function ListHome() {
         
         <Header />
         <SearchBar />
-        {/* <Text>Favorites</Text>
-        <FlatList 
-          data={dummyData}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
-        />
-
-        <FlatList 
-          data={dummyData}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
-        /> */}
-
         <SectionList
           sections={dummyData2}
           keyExtractor={keyExtractor}
@@ -193,7 +150,7 @@ export default function ListHome() {
           <View style={listStyle.modal}>
             <ScrollView>
               <View style={listStyle.modalContent}> 
-                <Text style={listStyle.itemName}>Details</Text>
+                <Text style={styles.itemName}>Details</Text>
                 <Text style={listStyle.modalBody}>{wikiData.summary}</Text>
                 <Button
                   title="Read More on Wiki"
@@ -220,26 +177,7 @@ const listStyle = StyleSheet.create({
   //   justifyContent: "center",
   //   alignItems: "center",
   // },
-  listItem: {
-    backgroundColor: "#ACB992",
-    flex: 1,
-    width: Dimensions.get('window').width,
-    padding: 25,
-    marginBottom: 14,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  itemName: {
-    fontSize: 30,
-    fontWeight: "bold",
-    color: "#464E2E",
-  },
-  itemDetailsColumn: {
-    flex: 1,
-    flexDirection: "column",
-    padding: 10,
-  },
+  
   modal: {
     alignItems: "center",
     backgroundColor: "#FBF8F1",
@@ -254,14 +192,11 @@ const listStyle = StyleSheet.create({
     right: 0,
     padding: 5,
   },
-  itemImg: {
-    width: 100,
-    height: 100,
-  },
   modalContent: {
     margin: 15,
   },
   modalBody: {
     fontSize: 16,
-  }
+  },
+
 })

@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 
 // Color palette: https://colorhunt.co/palette/362706464e2eacb992e9e5d6
 // Lightest -> darkest:
@@ -19,4 +19,34 @@ export default StyleSheet.create({
     headerImage: {
         width: 300,
     },
+    listItem: {
+        backgroundColor: "#ACB992",
+        flex: 1,
+        width: Dimensions.get('window').width,
+        padding: 25,
+        marginBottom: 14,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+
+    itemDetailsColumn: {
+        flex: 1,
+        flexDirection: "column",
+        padding: 10,
+    },
+    itemImg: {
+        width: 100,
+        height: 100,
+    },
+    itemName: {
+        fontSize: 30,
+        fontWeight: "bold",
+        color: "#464E2E",
+    },
+    divider: {
+        backgroundColor: "#464E2E",
+        width: "90%",
+        height: 5,
+    }
 })

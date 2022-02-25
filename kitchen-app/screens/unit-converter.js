@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Image, StyleSheet, SafeAreaView, Text, TextInput, View } from 'react-native';
+import { Button, Image, StyleSheet, SafeAreaView, Text, TextInput, View } from 'react-native';
 import styles from '../Style';
 import DropDownPicker from 'react-native-dropdown-picker';
 
@@ -20,17 +20,43 @@ const dummyUnits = [
 ]
 
 export default function UnitConverter() {
-    const [number, onChangeNumber] = useState("");
+    const [number, setNumber] = useState('');
     const [openOrig, setOpenOrig] = useState(false);
     const [openNew, setOpenNew] = useState(false);
-    const [valueOrig, setValueOrig] = useState(null);
-    const [valueNew, setValueNew] = useState(null);
+    const [valueOrig, setValueOrig] = useState('');
+    const [valueNew, setValueNew] = useState('');
     const [items, setItems] = useState([
-        {label: "g", value: "g"},
-        {label: "mg", value: "mg"},
-        {label: "oz", value: "oz"},
+        {label: "C", value: "Celsius"},
         {label: "cups", value: "cups"},
-    ])
+        {label: "F", value: "Fahrenheit"},
+        {label: "L", value: "liters"},
+        {label: "mL", value: "milliliters"},
+        {label: "oz", value: "ounces"},
+        {label: "pints", value: "pints"},
+        {label: "q", value: "quarts"},
+        {label: "tb", value: "tablespoons"},
+        {label: "tsp", value: "teaspoons"},
+    ]);
+    const [result, setResult] = useState('');
+    const [showResult, setShowResult] = useState(false);
+
+    const fetchResult = () => {
+        fetch(`http://192.168.1.185:8000/convertUnits/${number}/${valueOrig}/${valueNew}`)
+          .then((response) => response.json())
+        //   .then((response) => console.log(response))
+          .then((responseJson) => {
+            // console.log(responseJson)
+            setResult(responseJson);
+          })
+          .catch((error) => console.log(error))
+          .finally(() => setShowResult(true))
+    };
+
+    
+    // console.log(number);
+    // console.log(valueOrig);
+    // console.log(valueNew);
+    // console.log(result);
 
     return (
     <SafeAreaView style={styles.container}>
@@ -39,7 +65,7 @@ export default function UnitConverter() {
             <View style={unitStyles.innerContainer}>
                 <TextInput
                     placeholder="ex: 5"
-                    onChangeText={onChangeNumber}
+                    onChangeText={text=>setNumber(text)}
                     style={unitStyles.input}
                     value={number}
                     keyboardType="numeric"
@@ -54,6 +80,7 @@ export default function UnitConverter() {
                     containerStyle={{width: "50%"}}
                     zIndex={5000} 
                     placeholder="Select unit"
+                    onChangeValue={(value) => setValueOrig(value)}
                 />
             </View>
         </View>
@@ -69,15 +96,21 @@ export default function UnitConverter() {
                     containerStyle={{width: "50%"}}
                     zIndex={1000}
                     placeholder="Select unit"
+                    onChangeValue={(value) => setValueNew(value)}
             />
+        </View>
+        <View>
+            <Button title="Calculate" onPress={() => fetchResult()} />
         </View>
         <View style={unitStyles.outerContainer}>
             <Text style={styles.header}>Result</Text>
-            <Text>Results go here!</Text>
+            {showResult ? <Text style={unitStyles.resultText}>{result}</Text> : null}            
         </View>
     </SafeAreaView>
     );
 }
+
+
 
 const unitStyles = StyleSheet.create({
     input: {
@@ -101,5 +134,8 @@ const unitStyles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginBottom: 30,
+    },
+    resultText: {
+        fontSize: 30,
     }
   });
